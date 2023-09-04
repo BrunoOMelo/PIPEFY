@@ -589,17 +589,17 @@ def main():
 
 if __name__ == '__main__':
     import time
-
-    while True:
-        try:
+    main()
+    # while True:
+    #     try:
            
-            main()
-            time.sleep(60)
-        except:
-            print('Falha')
-            print(datetime.now())
-            time.sleep(60)
-            continue
+    #         main()
+    #         time.sleep(60)
+    #     except :
+    #         print('Falha')
+    #         print(datetime.now())
+    #         time.sleep(60)
+    #         continue
         
     
     
