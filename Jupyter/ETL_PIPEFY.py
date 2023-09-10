@@ -8,6 +8,13 @@ from googleapiclient.errors import HttpError
 from datetime import datetime
 import sys 
 
+import pandas as pd
+import requests
+import numpy as np
+import re 
+data_atual = datetime.now()
+data_formatada = data_atual.strftime("%Y-%m-%d")
+
 
 
 
@@ -25,18 +32,18 @@ def main():
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if os.path.exists('secrets/token.json'):
+        creds = Credentials.from_authorized_user_file('secrets/token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'client_secret.json', SCOPES)
+                'secrets/client_secret.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token.json', 'w') as token:
+        with open('secrets/token.json', 'w') as token:
             token.write(creds.to_json())
 
     
@@ -54,19 +61,14 @@ def main():
     
 
 
-    import pandas as pd
-    import requests
-    import numpy as np
-    import re 
-    data_atual = datetime.now()
-    data_formatada = data_atual.strftime("%Y-%m-%d")
+    
 
 
 
     url = "https://api.pipefy.com/graphql"
     query = '''
     {
-    allCards(pipeId: 301771911 last: 10 filter: {field: "updated_at", operator: gte, value: "2023-09-01T00:00:00-00:00",  AND: [{field: "updated_at", operator: lte, value: "2023-09-01T23:59:59-00:00"}]}
+    allCards(pipeId: 301771911 last: 10 filter: {field: "updated_at", operator: gte, value: "DATE.T00:00:00-00:00",  AND: [{field: "updated_at", operator: lte, value: "DATE.T23:59:59-00:00"}]}
     ) {
         edges {
         node {
@@ -93,7 +95,7 @@ def main():
     }
     }
     '''
-    query = query.replace('DATE.','2023-09-01')
+    query = query.replace('DATE.',data_formatada)
     payload = {"query": query}
     headers = {
     "accept": "application/json",
@@ -589,7 +591,7 @@ def main():
 
 if __name__ == '__main__':
     import time
-
+    
     while True:
         try:
            
